@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -36,6 +38,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?bool $isSubscribed = null;
+
+    #[ORM\ManyToMany(targetEntity: Checklist::class, mappedBy: 'username')]
+    private Collection $checklists;
+
+    public function __construct()
+    {
+        $this->checklists = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -139,6 +149,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsSubscribed(?bool $isSubscribed): self
     {
         $this->isSubscribed = $isSubscribed;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Checklist>
+     */
+    public function getChecklists(): Collection
+    {
+        return $this->checklists;
+    }
+
+    public function addChecklist(Checklist $checklist): self
+    {
+        if (!$this->checklists->contains($checklist)) {
+            $this->checklists->add($checklist);
+            $checklist->addUsername($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChecklist(Checklist $checklist): self
+    {
+        if ($this->checklists->removeElement($checklist)) {
+            $checklist->removeUsername($this);
+        }
 
         return $this;
     }
