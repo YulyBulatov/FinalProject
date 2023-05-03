@@ -6,18 +6,16 @@
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
+            <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
         {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
+        
     </head>
     <body>
-        {%  block navbar %}
+        {%  block navbar %} 
             <nav>
                 <ul>
-                    <li><a href="#">Menu</a></li>
+                    <li><button  id="menu-button">Menu</button></li>
                     <li>
                         <form action="#" method="get">
                             <input type="text" placeholder="Search...">
@@ -25,14 +23,38 @@
                         </form>
                     <li><a href="#">Services</a></li>
                     <li><a href="#">Suggest</a></li>
-                    <li><a href="{{ path('app_login') }}"l>Log in</a></li>
+                    <li><a href="{{ path('app_login') }}">Log in</a></li>
+                    <ul id="submenu">
+                        <li><a href="#">Life</a></li>
+                        <li><a href="#">Health</a></li>
+                        <li><a href="#">Links</a></li>
+                        <li><a href="#">Documents</a></li>
+                        <li><a href="#">Studies</a></li>
+                        <li><a href="#">Aids</a></li>
+                        <li><a href="#">Work</a></li>
+                        <li><a href="#">Taxes</a></li>
+                        <li><a href="{{ path('app_home') }}">Home</a></li>
+                    </ul>
                     
-                    </li>
                 </ul>
             </nav>
 
         
         {% endblock %}
         {% block body %}{% endblock %}
+
+        {% block javascripts %}
+        <script>
+            console.log('JavaScript loaded!');
+            const menuButton = document.getElementById('menu-button');
+            const submenu = document.getElementById('submenu');
+
+            menuButton.addEventListener('click', () => {
+            submenu.classList.toggle('show');
+            });
+        </script> 
+        {% endblock %}
     </body>
+
+    
 </html>
