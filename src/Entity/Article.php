@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,14 @@ class Article
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $creationDate = null;
+
+    #[ORM\ManyToMany(targetEntity: Source::class, inversedBy: 'articles')]
+    private Collection $source;
+
+    public function __construct()
+    {
+        $this->source = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -60,6 +70,30 @@ class Article
     public function setCreationDate(\DateTimeInterface $creationDate): self
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Source>
+     */
+    public function getSource(): Collection
+    {
+        return $this->source;
+    }
+
+    public function addSource(Source $source): self
+    {
+        if (!$this->source->contains($source)) {
+            $this->source->add($source);
+        }
+
+        return $this;
+    }
+
+    public function removeSource(Source $source): self
+    {
+        $this->source->removeElement($source);
 
         return $this;
     }

@@ -42,9 +42,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Checklist::class, mappedBy: 'username')]
     private Collection $checklists;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Rendezvous::class, orphanRemoval: true)]
+    private Collection $rendezvouses;
+
     public function __construct()
     {
         $this->checklists = new ArrayCollection();
+        $this->rendezvouses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,6 +179,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->checklists->removeElement($checklist)) {
             $checklist->removeUsername($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rendezvous>
+     */
+    public function getRendezvouses(): Collection
+    {
+        return $this->rendezvouses;
+    }
+
+    public function addRendezvouse(Rendezvous $rendezvouse): self
+    {
+        if (!$this->rendezvouses->contains($rendezvouse)) {
+            $this->rendezvouses->add($rendezvouse);
+            $rendezvouse->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezvouse(Rendezvous $rendezvouse): self
+    {
+        if ($this->rendezvouses->removeElement($rendezvouse)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezvouse->getUser() === $this) {
+                $rendezvouse->setUser(null);
+            }
         }
 
         return $this;

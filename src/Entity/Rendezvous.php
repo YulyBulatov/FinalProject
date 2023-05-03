@@ -38,6 +38,10 @@ class Rendezvous
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $rdvDateTime = null;
 
+    #[ORM\ManyToOne(inversedBy: 'rendezvouses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -135,6 +139,18 @@ class Rendezvous
     public function setRdvDateTime(?\DateTimeInterface $rdvDateTime): self
     {
         $this->rdvDateTime = $rdvDateTime;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
