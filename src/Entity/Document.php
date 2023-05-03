@@ -18,7 +18,7 @@ class Document
     #[ORM\Column(length: 100)]
     private ?string $title = null;
 
-    #[ORM\ManyToMany(targetEntity: source::class, inversedBy: 'documents')]
+    #[ORM\ManyToMany(targetEntity: Source::class, inversedBy: 'documents')]
     private Collection $source;
 
     public function __construct()
@@ -44,14 +44,14 @@ class Document
     }
 
     /**
-     * @return Collection<int, source>
+     * @return Collection<int, Source>
      */
     public function getSource(): Collection
     {
         return $this->source;
     }
 
-    public function addSource(source $source): self
+    public function addSource(Source $source): self
     {
         if (!$this->source->contains($source)) {
             $this->source->add($source);
@@ -60,7 +60,7 @@ class Document
         return $this;
     }
 
-    public function removeSource(source $source): self
+    public function removeSource(Source $source): self
     {
         $this->source->removeElement($source);
 
