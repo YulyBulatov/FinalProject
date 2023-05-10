@@ -28,6 +28,9 @@ class Article
     #[ORM\ManyToMany(targetEntity: Source::class, inversedBy: 'articles')]
     private Collection $source;
 
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    private ?Category $category = null;
+
     public function __construct()
     {
         $this->source = new ArrayCollection();
@@ -94,6 +97,18 @@ class Article
     public function removeSource(Source $source): self
     {
         $this->source->removeElement($source);
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
